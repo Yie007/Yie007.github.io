@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Yie">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2023/09/30/数据库设计范式/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="数据库设计范式参考参考文章： https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844904183611523086 概述数据库范式，又称为数据库规范化，用于保证数据库之间的关系合理，减少数据库中的数据冗余，消除操作带来的异常，增进数据的一致性。 用一句话来概括就是：数据库设计范式可以帮助我们减少数据的冗余，同时提高数据的完整性。 我们设计数据库的时候需要满足一些数据库范式，通常为：1NF、2NF、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库设计范式">
+<meta property="og:url" content="http://example.com/2023/09/30/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E8%8C%83%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Yie&#39;s Blog">
+<meta property="og:description" content="数据库设计范式参考参考文章： https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844904183611523086 概述数据库范式，又称为数据库规范化，用于保证数据库之间的关系合理，减少数据库中的数据冗余，消除操作带来的异常，增进数据的一致性。 用一句话来概括就是：数据库设计范式可以帮助我们减少数据的冗余，同时提高数据的完整性。 我们设计数据库的时候需要满足一些数据库范式，通常为：1NF、2NF、">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944729191ddd4~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://juejin.cn/equation?tex=y%20=%20f(x)">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294478f4b78bd9~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729447d6caba0f9~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294481094df130~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294484b7bd7b14~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294487b37ab282~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729449451055760~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944971f50d919~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294498d5c7549b~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729449b85a01b3d~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729449d283b32e0~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729449e5f705664~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944a040d954ce~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944a1c10693d6~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="og:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944a4388123f5~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+<meta property="article:published_time" content="2023-09-30T01:40:12.000Z">
+<meta property="article:modified_time" content="2023-10-07T13:46:04.081Z">
+<meta property="article:author" content="Yie">
+<meta property="article:tag" content="数据库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944729191ddd4~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            数据库设计范式 -
+        
+        Yie&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+        <link href="https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-2/AlibabaPuHuiTi-2-45-Light/AlibabaPuHuiTi-2-45-Light.ttf" rel="stylesheet">
+    
+    
+        <link href="https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-2/AlibabaPuHuiTi-2-45-Light/AlibabaPuHuiTi-2-45-Light.ttf" rel="stylesheet">
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":true,"family":"AlibabaPuHuiTi","url":"https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-2/AlibabaPuHuiTi-2-45-Light/AlibabaPuHuiTi-2-45-Light.ttf"},"english":{"enable":true,"family":"AlibabaPuHuiTi","url":"https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-2/AlibabaPuHuiTi-2-45-Light/AlibabaPuHuiTi-2-45-Light.ttf"}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":true},"scroll_progress":{"bar":true,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/pexels-krivec-ales-547115.jpg","dark":"/images/pexels-stijn-dijkstra-10643915.jpg"},"title":"Keep chasing","subtitle":{"text":["生命不息，攀登不止。","Life never stops, keep climbing."],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Photos":{"icon":"fa-solid fa-image","path":"/masonry/"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about","Github":"https://github.com/Yie007","Blog":"https://ohevan.com"}}},"search":{"enable":"ture","preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":{"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"}}},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2023/10/13 22:31:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Yie&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        ARCHIVES
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/tags"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-tags"></i>
+                                        
+                                        TAGS
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/categories"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-folder"></i>
+                                        
+                                        CATEGORIES
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/masonry/"  >
+                                    
+                                        
+                                            <i class="fa-solid fa-image"></i>
+                                        
+                                        PHOTOS
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        ABOUT&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/about">ME
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/Yie007">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://ohevan.com">BLOG
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                ARCHIVES
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/tags"  >
+                             
+                                
+                                    <i class="fa-regular fa-tags"></i>
+                                
+                                TAGS
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/categories"  >
+                             
+                                
+                                    <i class="fa-regular fa-folder"></i>
+                                
+                                CATEGORIES
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/masonry/"  >
+                             
+                                
+                                    <i class="fa-solid fa-image"></i>
+                                
+                                PHOTOS
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                ABOUT&nbsp;<i class="group-hover:rotate-180 transition-transform fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="drawer-navbar-item text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" href="/about">ME</a>
+                            </li>
+                        
+                            <li class="drawer-navbar-item text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="https://github.com/Yie007">GITHUB</a>
+                            </li>
+                        
+                            <li class="drawer-navbar-item text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="https://ohevan.com">BLOG</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">数据库设计范式</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header flex flex-row gap-2 items-center">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/avatar.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">Yie</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv1</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-09-30 09:40:12</span>
+        <span class="mobile">2023-09-30 09:40:12</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-10-07 21:46:04</span>
+            <span class="mobile">2023-10-07 21:46:04</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <h1 id="数据库设计范式"><a href="#数据库设计范式" class="headerlink" title="数据库设计范式"></a>数据库设计范式</h1><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>参考文章：</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904183611523086">https://juejin.cn/post/6844904183611523086</a></p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>数据库范式，又称为<strong>数据库规范化</strong>，用于保证数据库之间的关系合理，减少数据库中的数据冗余，消除操作带来的异常，增进数据的一致性。</p>
+<p>用一句话来概括就是：数据库设计范式可以帮助我们减少数据的冗余，同时提高数据的完整性。</p>
+<p><strong>我们设计数据库的时候需要满足一些数据库范式，通常为：1NF、2NF、3NF、BCNF</strong></p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p>首先，我们定义一张表，并添加一些数据，这个表 1 （选课表）有助于我们理解这些概念：</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944729191ddd4~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<h3 id="码"><a href="#码" class="headerlink" title="码"></a>码</h3><p>关系中的某个或者某几个属性的集合，用于唯一地标识每一条数据（这里的每一条数据就是数据库中的每一条记录）。</p>
+<h4 id="候选码"><a href="#候选码" class="headerlink" title="候选码"></a>候选码</h4><p>在一个表的关系中，可以存在多个关系集合用于唯一确定一条记录，这些多个集合就称为<strong>候选码</strong>，也称为候选键。候选码可以存在多个，每一个候选码都可以唯一地确定一条记录。</p>
+<p>我们换一种更加严谨的说法：假设 K 为某个表中的一个属性或者属性组，如果除去 K 之外的所有属性都<strong>完全函数依赖</strong>（稍后会介绍）于 K，那么我们就称 K 为候选码。</p>
+<p>根据上表的示例我们可以得出一个候选码：</p>
+<ul>
+<li>（学号，课名）</li>
+</ul>
+<h4 id="主码"><a href="#主码" class="headerlink" title="主码"></a>主码</h4><p>通常我们会从候选码中选择一个码作为<strong>主码</strong>，也就是我们通常所说的主键。</p>
+<h3 id="函数依赖"><a href="#函数依赖" class="headerlink" title="函数依赖"></a>函数依赖</h3><p>在数学上的解释是：<img src="https://juejin.cn/equation?tex=y%20=%20f(x)" alt="y = f(x)">，输入一个 X，可以得到一个确定的 Y。有点类似于纯函数。</p>
+<p>对应到一个表上就是，在一个属性（属性组）X 确定的情况下，必定能够确定属性 Y 的值，这就能够称作 Y 函数依赖于 X，写作 X -&gt; Y 。</p>
+<p>记作：</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294478f4b78bd9~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>比如下面这些关系都<strong>存在</strong>函数依赖：</p>
+<ul>
+<li>（学号）-&gt;（姓名）</li>
+<li>（学号，课名）-&gt;（分数）</li>
+<li>（系名）-&gt;（系主任）</li>
+</ul>
+<p>但是，下面这些关系就<strong>不存在</strong>函数依赖：</p>
+<ul>
+<li>（姓名）-&gt;（学号），因为有可能会出现重名的情况，所以只依靠姓名是无法确定学号的。</li>
+<li>（学号）-&gt;（分数），因为一个学号有多个科目，每一个科目都存在一个分数，不能只靠学号来确定分数。</li>
+<li>……</li>
+</ul>
+<h4 id="完全函数依赖"><a href="#完全函数依赖" class="headerlink" title="完全函数依赖"></a>完全函数依赖</h4><p>在一个表中，如果存在 X -&gt; Y，那么对于 X 下的任何一个真子集（X’），X’ -&gt; Y都不成立，那么我们就说 Y 对于 X 完成函数依赖。</p>
+<p>记作：X -&gt;F  Y</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729447d6caba0f9~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>通俗的说，必须通过码中的所有属性才可以唯一确定一个值。比如：</p>
+<ul>
+<li>（学号）-&gt;F（姓名）</li>
+<li>（学号，课名）-&gt;F（分数）</li>
+</ul>
+<h4 id="部分函数依赖"><a href="#部分函数依赖" class="headerlink" title="部分函数依赖"></a>部分函数依赖</h4><p>在一个表中，如果存在 X -&gt; Y，但是 Y 并不完成依赖于 X。存在一些 X 的子集 X’，X‘ -&gt; Y成立，那么我们就说 Y 对于X 部分函数依赖。</p>
+<p>记作：X -&gt;P Y</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294481094df130~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>通俗的说，只需要码中的部分属性即可唯一确定一个值。比如：</p>
+<ul>
+<li>（学号，课名）-&gt; （姓名），只需要根据码中的学号即可唯一确定姓名。</li>
+</ul>
+<p><strong>它跟完全函数依赖的区别在于，完全函数依赖必须要通过码中的所有属性才可以唯一确定一个值，而部分函数依赖只需要码中的部分属性即可。</strong></p>
+<h4 id="传递函数依赖"><a href="#传递函数依赖" class="headerlink" title="传递函数依赖"></a>传递函数依赖</h4><p>如果 Z 函数依赖于 Y，Y 函数依赖于 X，并且 X 不函数依赖于 Y，那么我们就说 Z 传递函数依赖于 X。</p>
+<p>记作：X -&gt;T Z</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294484b7bd7b14~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>通俗的说，通过码可以唯一确定一个属性，然后通过该属性可以唯一确定另一个属性，所以就演变为了可以通过码唯一确定一个无函数依赖的属性。</p>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p>属性就是我们在表中定义的每一个列</p>
+<h4 id="主属性"><a href="#主属性" class="headerlink" title="主属性"></a>主属性</h4><p>在码中的所有属性（每一列）都称为主属性</p>
+<h4 id="非主属性"><a href="#非主属性" class="headerlink" title="非主属性"></a>非主属性</h4><p>除了主属性之外的其他属性，都称为非主属性。</p>
+<h2 id="范式"><a href="#范式" class="headerlink" title="范式"></a>范式</h2><p>有了上面的那些概念，我们现在就可以正式来谈谈范式了。数据库设计范式有很多种：1NF、2NF、3NF、BCNF、4NF、5NF、6NF 等等。</p>
+<p>但是并不是说遵循的范式等级越高越好，范式过高虽然具有对数据关系有更好的约束性，但是也会导致表之间的关系更加繁琐，从而导致每次操作的表会变多，数据库性能下降。</p>
+<p>通常在设计中，最高也就遵循到 BCNF，普遍还是 3NF。</p>
+<h3 id="1NF"><a href="#1NF" class="headerlink" title="1NF"></a>1NF</h3><p>1NF，又称第一范式。只要每一列中的数据都不可再分即可满足该范式，关系型数据库建立的表默认都支持该范式。但是一些开发人员会反其道而行，比如下面这种表 2 设计：</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294487b37ab282~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>这种设计是违反了第一范式的设计，因为这里的地址和亲属是可以继续划分的，而第一范式强调的就是属性不可再分。</p>
+<p><strong>结论：属性不可再分。</strong></p>
+<h3 id="2NF"><a href="#2NF" class="headerlink" title="2NF"></a>2NF</h3><p>1NF 只是设计数据库最基本的要求，但是数据会存在大量的冗余，并存在删除异常、插入异常、更新异常。我们把目光看到我们一开始的表 1 中。</p>
+<p>在该表中，存在下面几个问题：</p>
+<ul>
+<li>每一名学生的学号、姓名、系名、系主任都是重复的数据，这都是冗余数据。</li>
+<li>假如学校新建了一个系，但是这个系还未招收学生。那么就无法将系名与系主任关联起来，这就是插入异常。</li>
+<li>假如系里的学生都毕业了，并且还未招收其他学生，那么该表中的学生删除之后，也同时将系的信息也删除了，这就会表现为不存在这个系，这就是删除异常。</li>
+<li>假如电子系要更换系主任了，那么就要将这个表里每一条有关电子系的系主任都进行更新，这就是更新异常。</li>
+</ul>
+<p>为了解决上述的问题，我们就要引入更高一级的第二范式（2NF）。</p>
+<p>2NF 对 1NF 做了哪些改进呢？</p>
+<p><strong>2NF 在 1NF 的基础上，消除了非主属性对码的部分函数依赖</strong>  。我们已经知道<strong>码</strong>是可以唯一确定一条记录的属性集合，<strong>非主属性</strong>是除了码中属性之外的其他属性。</p>
+<p>我们来分析表 1：</p>
+<p>码：（学号、课名）</p>
+<p>主属性：（学号、课名）</p>
+<p>非主属性：（姓名、系名、系主任、班级、课名、分数）</p>
+<p>我们回过头来分析一下表 1 是否符合 2NF，<strong>要符合 2NF 那么就不能存在非主属性对码的部分函数依赖</strong>。判断是否符合 2NF 可以通过以下步骤：</p>
+<ol>
+<li>找出表中所有的<strong>码（候选码）</strong>。</li>
+<li>根据第一步得出的码找出所有的<strong>主属性</strong>。</li>
+<li>除了主属性之外的其他属性，就都是<strong>非主属性</strong>。</li>
+<li>判断是否存在非主属性<strong>部分函数依赖</strong>于码。</li>
+</ol>
+<p>我们根据上面的步骤来验证表 1 是否符合 2NF。</p>
+<h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><p>找出表中所有的候选码。</p>
+<p>如何找候选码呢？只有使用排列组合来寻找了。</p>
+<ul>
+<li>首先查看每一个属性，如果该属性确定，是否可以唯一地确定一条记录。</li>
+<li>查看每两个属性组合的属性组，如果该属性组确定，是否可以唯一地确定一条记录。</li>
+<li>……</li>
+</ul>
+<p>以此类推，一直到所有属性组成的属性组为止。这看起来相当的繁琐，但是我们一般都可以通过直接观察得到，或者我们设计的时候就可以确定我们拥有的候选码有哪些。并不需要一个个的的自己组合判断。</p>
+<p>如果一定要自己组合判断，我们可以根据候选码具有完全函数依赖的特性，可以推测出：如果 A 是码，那么任何与 A 组合的属性组都不符合码的要求，比如：（A，B）（A，B，C）等等。</p>
+<p>我们根据上面的解释，我们在这一步中可以得出表 1 中的候选码：<strong>（学号、课名）</strong></p>
+<h4 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h4><p>根据码找出所有的主属性。</p>
+<p>这一步相对简单，第一步中找到的码只有（学号、课名）。所以主属性只有（学号、课名）。</p>
+<h4 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h4><p>除去主属性之外的其他属性，都是非主属性。</p>
+<p>所以非主属性有（姓名、系名、系主任、班级、分数）。</p>
+<h4 id="第四步"><a href="#第四步" class="headerlink" title="第四步"></a>第四步</h4><p>判断第三步找出的非主属性是否部分函数依赖于第一步找出的码。</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729449451055760~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>我们根据上面的这张图，可以看出，有多个非主属性部分函数依赖于码。</p>
+<ul>
+<li>对于（学号，课名）-&gt;（姓名），存在（学号）-&gt;（姓名），存在非主属性<strong>姓名</strong>部分函数依赖于码。</li>
+<li>对于（学号，课名）-&gt;（系名），存在（学号）-&gt;（系名），存在非主属性<strong>系名</strong>部分函数依赖于码。</li>
+<li>……</li>
+</ul>
+<p>所以对于表 1 来说，它不符合 2NF 的要求，它只能达到 1NF 的要求。</p>
+<p>在这种情况下，我们应该如何改进才能让表 1 符合 2NF 的要求呢？当然是将表进行拆分，消除这些部分函数依赖，有个比较正式的名称：<strong>模式分解</strong>。</p>
+<p>我们可以将选课表进行拆分，将它拆分为两张表：选课表、学生表。</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944971f50d919~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/17294498d5c7549b~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>我们现在再来看选课表。此时它只有一个码：<strong>（学号，课名）</strong>，非主属性只有一个：<strong>分数</strong>。它们之间已经不是部分函数依赖的关系了，而是完全函数依赖的关系。选课表中已经不存在部分函数依赖，所以此时选课表符合第二范式（2NF）。</p>
+<p>我们现在来看看学生表是否符合 2NF。</p>
+<p>按照上面的四个步骤：</p>
+<ol>
+<li>码：（学号）</li>
+<li>主属性：学号</li>
+<li>非主属性：（姓名，系名，系主任，班级）</li>
+<li>因为码中只有一个属性，所以不可能存在部分函数依赖。</li>
+</ol>
+<p>所以学生表也是符合 2NF 的。</p>
+<p><strong>结论：在 1NF 的基础上，通过对表的拆分，消除表中非主属性对码的部分函数依赖。</strong></p>
+<h3 id="3NF"><a href="#3NF" class="headerlink" title="3NF"></a>3NF</h3><p>我们通过 2NF 已经将表 1 拆分成了两个表：选课表、学生表。但是依然存在着一些问题，比如：</p>
+<ul>
+<li>当删除学生表中的学生之后，会将系的信息也一起删除。如果将学生表的内容全部都删除，那么系信息也全部都不存在了。</li>
+<li>当创建一个新的系，但是还没有该系的学生，也无法添加该系的信息。</li>
+</ul>
+<p>我们通过上一节已经知道选课表和学生表都是符合 2NF 的，但是学生表中依然存在着一些问题。所以，符合 2NF 的表不一定就能满足我们的要求。此时，我们就要用到 3NF。</p>
+<p>只要表中存在非主属性对码的传递函数依赖，则不满足 3NF 的要求。所以对于 3NF 来说，就是在 2NF 的基础上，消除非主属性对码的<strong>传递函数依赖</strong>。</p>
+<p>我们来分析以下学生表中的函数依赖关系：</p>
+<ol>
+<li>找出学生表中的码：（学号）</li>
+<li>主属性：学号</li>
+<li>非主属性：（学号，系名，系主任，分数）</li>
+<li>学号与系主任之间存在传递函数依赖</li>
+</ol>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729449b85a01b3d~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>通过图可以看到，只要我们确定了学号，我们就可以确定系名，确定了系名，我们就可以确定系主任。因此在学号确定的情况下，我们也可以确定系主任。这就是传递函数依赖。</p>
+<p>消除传递函数依赖的方法也是通过拆分表来完成，我们将学生表拆分为两张表：学生表、系表</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729449d283b32e0~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/1729449e5f705664~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>在拆分之后，学生表就消除了函数传递依赖，所以此时学生表符合 3NF，系表也符合 3NF。</p>
+<p><strong>结论：在 2NF 的基础上，消除表中非主属性对码的传递函数依赖。</strong></p>
+<p>我们为了使表 1 符合设计范式，将表 1 拆分成了三个表。从而解决了数据的冗余、删除异常、添加异常、更新异常的问题。</p>
+<p>但是这也带来了一个新的问题，我们查询数据的时候不能只通过查询一张表来得出结果，而要通过连接三张表一起查询才行，这也会影响数据库的查询性能。</p>
+<h3 id="BCNF"><a href="#BCNF" class="headerlink" title="BCNF"></a>BCNF</h3><p>我们已经了解 1NF、2NF、3NF，也通过这三个范式解决了问题，那么为什么还会有 BCNF 呢？这个范式又解决了什么问题？我们带着这两个问题一起来看看 BCNF。</p>
+<p>首先，要说明的是，上面经过拆分之后的三张表都是符合 BCNF的。看到这里，小朋友，你是否有很多问号？</p>
+<p>别急，让我们先看一下 BCNF 的定义：不存在<strong>主属性</strong>对于码的部分函数依赖和传递函数依赖，那么即符合 BCNF。</p>
+<p>注意：这里说的是<strong>主属性</strong>，而前面的 2NF、3NF都是<strong>非主属性</strong>对码的部分函数依赖和传递函数依赖。要注意这个区别，很重要。</p>
+<p>我们可以看到上面三个表因为都只有一个码，所以不存在主属性对码的部分函数依赖和传递函数依赖。不符合BCNF 需要存在两个码以上。</p>
+<p>比如下面这种情况：</p>
+<ul>
+<li>某公司有若干个仓库</li>
+<li>每个仓库只能有一名管理员，一名管理员只能在一个仓库中工作</li>
+<li>一个仓库中可以存放多种物品，一个物品也可以存放在不同的仓库。每种物品在每个仓库中都有对应的数量。</li>
+</ul>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944a040d954ce~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>我们来分析一下这个表：</p>
+<ul>
+<li>码：（仓库名，物品名），（管理员，物品名）</li>
+<li>主属性：仓库名、物品名、管理员</li>
+<li>非主属性：数量</li>
+</ul>
+<p>非主属性只有“数量”，而非主属性对于两个码都不存在部分函数依赖和传递函数依赖，所以这个表是符合 3NF的。但是这个表却是不符合 BCNF 的。</p>
+<p>因为存在主属性对码的部分函数依赖：</p>
+<ul>
+<li>（仓库名，物品名）-&gt; 管理员，只要确定仓库名，即可确定管理员，所以管理员部分函数依赖于仓库名。</li>
+<li>（管理员，物品名）-&gt; 仓库名，同上。</li>
+</ul>
+<p>那么我们要将该表进行拆分才能让物品表符合 BCNF。将该表拆分为两个表：仓库表、物品表。</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944a1c10693d6~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/8/172944a4388123f5~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
+<p>我们可以来看看拆分之后解决了什么问题：</p>
+<ul>
+<li>如果仓库换管理员，不需要将物品表中的每一个该仓库的数据都进行修改。</li>
+<li>如果物品都被删除，仓库依然存在，仓库管理员也依然于仓库存在关系</li>
+<li>如果新增一个仓库，但是还没有物品，可以直接在仓库表添加一条记录即可，数据库不会出错。</li>
+</ul>
+<p>所以消除了主属性对码的部分函数依赖和传递函数依赖之后，数据库中的操作的异常就不再出现了。</p>
+<p><strong>结论：在 3NF 的基础上，消除主属性对码的部分函数依赖和传递函数依赖。</strong></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 数据库设计范式</li>
+        <li><strong>Author:</strong> Yie</li>
+        <li><strong>Created at
+                :</strong> 2023-09-30 09:40:12</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2023-10-07 21:46:04
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://redefine.ohevan.com/2023/09/30/数据库设计范式/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+            This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/09/30/SpringSecurity/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">SpringSecurity</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/09/30/CSS/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">CSS</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">数据库设计范式</div>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E8%8C%83%E5%BC%8F"><span class="nav-text">数据库设计范式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-text">前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A0%81"><span class="nav-text">码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E4%BE%9D%E8%B5%96"><span class="nav-text">函数依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7"><span class="nav-text">属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8C%83%E5%BC%8F"><span class="nav-text">范式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1NF"><span class="nav-text">1NF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2NF"><span class="nav-text">2NF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3NF"><span class="nav-text">3NF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BCNF"><span class="nav-text">BCNF</span></a></li></ol></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2023</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Yie</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
